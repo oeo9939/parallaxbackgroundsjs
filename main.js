@@ -2,7 +2,8 @@ const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 const CANVAS_WIDTH = canvas.width = 800;
 const CANVAS_HEIGHT = canvas.height = 700;
-let gameSpeed = 10;
+let gameSpeed = 5;
+// let gameFrame = 0;
 
 const backgroundLayer1 = new Image();
 backgroundLayer1.src = "/assets/layer-1.png";
@@ -15,6 +16,17 @@ backgroundLayer4.src = "/assets/layer-4.png";
 const backgroundLayer5 = new Image();
 backgroundLayer5.src = "/assets/layer-5.png";
 
+window.addEventListener("load", () => {
+    const slider = document.getElementById("slider");
+    slider.value = gameSpeed;
+    const showGameSpeed = document.getElementById("showGameSpeed");
+    showGameSpeed.innerHTML = gameSpeed;
+    slider.addEventListener("change", (e) => {
+        console.log(e.target.value);
+        gameSpeed = e.target.value;
+        showGameSpeed.innerHTML = e.target.value;
+});
+
 // let x = 0;
 // let x2 = 2400;
 
@@ -24,7 +36,7 @@ class Layer {
         this.y = 0;
         this.width = 2400;
         this.height = 700;
-        this.x2 = this.width;
+        // this.x2 = this.width;
         this.image = image;
         this.speedModifier = speedModifier;
         this.speed = gameSpeed * this.speedModifier;
@@ -32,18 +44,18 @@ class Layer {
     update() {
         this.speed = gameSpeed * this.speedModifier;
         if (this.x <= -this.width) {
-            this.x = this.width + this.x2 - this.speed;
+            this.x = 0; //this.width + this.x2 - this.speed;
         }
-        if (this.x2 <= -this.width) {
-            this.x2 = this.width + this.x - this.speed;
-        }
-        this.x = Math.floor(this.x - this.speed);
-        this.x2 = Math.floor(this.x2 - this.speed);
-
+        // if (this.x2 <= -this.width) {
+        //     this.x2 = this.width + this.x - this.speed;
+        // }
+        this.x = this.x - this.speed;
+        // this.x2 = Math.floor(this.x2 - this.speed);
+        // this.x = gameFrame * this.speed % this.width;
     }
     draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        ctx.drawImage(this.image, this.x2, this.y, this.width, this.height);
+        ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
     }
 }
 
@@ -74,7 +86,10 @@ function animate() {
         object.update();
         object.draw();
     });
+    // gameFrame--;
     requestAnimationFrame(animate);
 };
 
 animate();
+});
+
